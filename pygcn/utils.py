@@ -36,15 +36,13 @@ def load_data(path="../data/cora/", dataset="cora"):
     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
 
     features = normalize(features)
-    # 原来用的normalize不是对称规范化，而是常规的按行归一化，准确率82.5%
-    # 现在修改成对称规范化，准确率变成79.9%了，不知道为什么……难道是还需要调整超参？
     adj = normalize_adj(adj + sp.eye(adj.shape[0]))
 
     idx_train = range(140)
     idx_val = range(200, 500)
     idx_test = range(500, 1500)
 
-    features = torch.FloatTensor(np.array(features.todense()))
+    features = sparse_mx_to_torch_sparse_tensor(features) # torch.FloatTensor(np.array(features.todense()))
     labels = torch.LongTensor(np.where(labels)[1])
     adj = sparse_mx_to_torch_sparse_tensor(adj)
 
