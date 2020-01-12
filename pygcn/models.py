@@ -16,7 +16,7 @@ class GCN(nn.Module):
         if sparse_input:
             x = x[0], F.dropout(x[1], self.dropout, training=self.training), x[2]
             x = torch.sparse.FloatTensor(*x)
-            print(x.device())
+            print(x.is_cuda)
         else:
             x = F.dropout(x, self.dropout, training=self.training)
         x = F.relu(self.gc1(x, adj, sparse_input))
