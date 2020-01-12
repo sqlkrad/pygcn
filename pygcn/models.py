@@ -12,7 +12,7 @@ class GCN(nn.Module):
         self.dropout = dropout
 
     def forward(self, x, adj):
-        x = F.dropout(x, self.dropout, training=self.training)
+        x = F.dropout(x, self.dropout+0.3, training=self.training) # 这里本来应该用一个sparse dropout，但是就加大dropout来代替了
         x = F.relu(self.gc1(x, adj))
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.gc2(x, adj)
