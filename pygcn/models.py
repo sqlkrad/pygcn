@@ -3,6 +3,10 @@ import torch.nn.functional as F
 from layers import GraphConvolution
 
 
+def sparse_dropout(x, p, training):
+    x.values = F.dropout(x.values, p, training=training)
+    
+
 class GCN(nn.Module):
     def __init__(self, nfeat, nhid, nclass, dropout):
         super(GCN, self).__init__()
@@ -13,7 +17,7 @@ class GCN(nn.Module):
 
     def forward(self, x, adj, sparse_input=False):
         if sparse_input:
-            x = x # sparse_dropout(x, self.dropout, training=self.training)
+            x = sparse_dropout(x, self.dropout, training=self.training)
         else:
             x = F.dropout(x, self.dropout, training=self.training)
         x = F.relu(self.gc1(x, adj, sparse_input))
