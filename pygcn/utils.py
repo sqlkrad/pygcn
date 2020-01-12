@@ -37,7 +37,7 @@ def load_data(path="../data/cora/", dataset="cora"):
 
     features = normalize(features)
     # 原来用的normalize不是对称规范化，而是常规的按行归一化，准确率82.5%
-    # 现在修改成对称规范化
+    # 现在修改成对称规范化，准确率变成79.9%了，不知道为什么……难道是还需要调整超参？
     adj = normalize_adj(adj + sp.eye(adj.shape[0]))
 
     idx_train = range(140)
@@ -67,7 +67,6 @@ def normalize(mx):
 
 def normalize_adj(adj):
     """Symmetrically normalize adjacency matrix."""
-    adj = sp.coo_matrix(adj)
     rowsum = np.array(adj.sum(1))
     d_inv_sqrt = np.power(rowsum, -0.5).flatten()
     d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
