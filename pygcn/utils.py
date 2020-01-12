@@ -42,7 +42,7 @@ def load_data(path="../data/cora/", dataset="cora"):
     idx_val = range(200, 500)
     idx_test = range(500, 1500)
 
-    features = sparse_mx_to_torch_sparse_tensor(features) # torch.FloatTensor(np.array(features.todense()))
+    features = sparse_mx_to_torch_sparse_tensor(features, trans=False) # torch.FloatTensor(np.array(features.todense()))
     labels = torch.LongTensor(np.where(labels)[1])
     adj = sparse_mx_to_torch_sparse_tensor(adj)
 
@@ -79,11 +79,14 @@ def accuracy(output, labels):
     return correct / len(labels)
 
 
-def sparse_mx_to_torch_sparse_tensor(sparse_mx):
+def sparse_mx_to_torch_sparse_tensor(sparse_mx, trans=True):
     """Convert a scipy sparse matrix to a torch sparse tensor."""
     sparse_mx = sparse_mx.tocoo().astype(np.float32)
     indices = torch.from_numpy(
         np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))
     values = torch.from_numpy(sparse_mx.data)
     shape = torch.Size(sparse_mx.shape)
-    return torch.sparse.FloatTensor(indices, values, shape)
+    if trans:
+        return torch.sparse.FloatTensor(indices, values, shape)
+    else:
+        return indices, values, shape
