@@ -17,7 +17,7 @@ class GCN(nn.Module):
 
     def forward(self, x, adj, sparse_input=False):
         if sparse_input:
-            x = sparse_dropout(x, self.dropout, training=self.training)
+            sparse_dropout(x, self.dropout, training=self.training)
         else:
             x = F.dropout(x, self.dropout, training=self.training)
         x = F.relu(self.gc1(x, adj, sparse_input))
