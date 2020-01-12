@@ -35,6 +35,7 @@ def load_data(path="../data/cora/", dataset="cora"):
     # build symmetric adjacency matrix
     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
 
+    # 这个normalize不是对称规范化，而是常规的按行归一化
     features = normalize(features)
     adj = normalize(adj + sp.eye(adj.shape[0]))
 
