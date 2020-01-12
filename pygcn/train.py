@@ -70,7 +70,7 @@ def train(epoch):
     t = time.time()
     model.train()
     optimizer.zero_grad()
-    output = model(features, adj)
+    output = model(features, adj, sparse_input=True)
     loss_train = F.nll_loss(output[idx_train], labels[idx_train])
     acc_train = accuracy(output[idx_train], labels[idx_train])
     loss_train.backward()
@@ -80,7 +80,7 @@ def train(epoch):
         # Evaluate validation set performance separately,
         # deactivates dropout during validation run.
         model.eval()
-        output = model(features, adj)
+        output = model(features, adj, sparse_input=True)
 
     loss_val = F.nll_loss(output[idx_val], labels[idx_val])
     acc_val = accuracy(output[idx_val], labels[idx_val])
@@ -94,7 +94,7 @@ def train(epoch):
 
 def test():
     model.eval()
-    output = model(features, adj)
+    output = model(features, adj, sparse_input=True)
     loss_test = F.nll_loss(output[idx_test], labels[idx_test])
     acc_test = accuracy(output[idx_test], labels[idx_test])
     print("Test set results:",
