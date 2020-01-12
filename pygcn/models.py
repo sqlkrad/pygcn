@@ -11,9 +11,12 @@ class GCN(nn.Module):
         self.gc2 = GraphConvolution(nhid, nclass)
         self.dropout = dropout
 
-    def forward(self, x, adj):
-        x = F.dropout(x, self.dropout+0.3, training=self.training) # 这里本来应该用一个sparse dropout，但是就加大dropout来代替了
-        x = F.relu(self.gc1(x, adj))
+    def forward(self, x, adj, sparse_input=False):
+        if sparse_input:
+            x = x # sparse_dropout(x, self.dropout, training=self.training)
+        else:
+            x = F.dropout(x, self.dropout, training=self.training)
+        x = F.relu(self.gc1(x, adj, sparse_input))
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.gc2(x, adj)
         return F.log_softmax(x, dim=1)
