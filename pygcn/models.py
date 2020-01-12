@@ -14,7 +14,7 @@ class GCN(nn.Module):
     def forward(self, x, adj, sparse_input=False):
         if sparse_input:
             x[1] = F.dropout(x[1], self.dropout, training=self.training)
-            x = torch.sparse.FloatTensor(*x)
+            x = torch.sparse.FloatTensor(*x).cuda()
         else:
             x = F.dropout(x, self.dropout, training=self.training)
         x = F.relu(self.gc1(x, adj, sparse_input))
