@@ -12,7 +12,10 @@ import torch.optim as optim
 from pygcn.utils import load_data, accuracy
 from pygcn.models import GCN
 
-# Training settings
+"""
+通过命令行传入的一些参数配置
+"""
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='Disables CUDA training.')
@@ -37,6 +40,10 @@ np.random.seed(args.seed)
 torch.manual_seed(args.seed)
 if args.cuda:
     torch.cuda.manual_seed(args.seed)
+
+"""
+开始主程序
+"""
 
 # Load data
 adj, features, labels, idx_train, idx_val, idx_test = load_data()
