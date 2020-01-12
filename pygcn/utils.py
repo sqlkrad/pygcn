@@ -35,9 +35,10 @@ def load_data(path="../data/cora/", dataset="cora"):
     # build symmetric adjacency matrix
     adj = adj + adj.T.multiply(adj.T > adj) - adj.multiply(adj.T > adj)
 
-    # 这个normalize不是对称规范化，而是常规的按行归一化
     features = normalize(features)
-    adj = normalize(adj + sp.eye(adj.shape[0]))
+    # 原来用的normalize不是对称规范化，而是常规的按行归一化，准确率82.5%
+    # 现在修改成对称规范化
+    adj = normalize_adj(adj + sp.eye(adj.shape[0]))
 
     idx_train = range(140)
     idx_val = range(200, 500)
@@ -62,6 +63,16 @@ def normalize(mx):
     r_mat_inv = sp.diags(r_inv)
     mx = r_mat_inv.dot(mx)
     return mx
+
+
+def normalize_adj(adj):
+    """Symmetrically normalize adjacency matrix."""
+    adj = sp.coo_matrix(adj)
+    rowsum = np.array(adj.sum(1))
+    d_inv_sqrt = np.power(rowsum, -0.5).flatten()
+    d_inv_sqrt[np.isinf(d_inv_sqrt)] = 0.
+    d_mat_inv_sqrt = sp.diags(d_inv_sqrt)
+    return adj.dot(d_mat_inv_sqrt).transpose().dot(d_mat_inv_sqrt)
 
 
 def accuracy(output, labels):
