@@ -58,7 +58,7 @@ optimizer = optim.Adam(model.parameters(),
 
 if args.cuda:
     model.cuda()
-    # features = features.cuda()
+    features = [f.cuda() for f in features]
     adj = adj.cuda()
     labels = labels.cuda()
     idx_train = idx_train.cuda()
